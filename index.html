@@ -1,0 +1,107 @@
+<html>
+
+    <body>
+        When you choose three intergers randomly from 1 to 15 (inclusive)
+        <h2>Problem 1</h2>
+        find the probability that multiplication of these numbers is multiple of 15.<br>
+        <span id="p1"></span>
+        <h2>Problem 2</h2>
+        find the probability that multiplication of these numbers is multiple of 60.<br>
+        <span id="p2"></span>
+        <br>
+        Line break:
+        <select id="lb">
+            <option value="0">No break</option>
+            <option value="1">Per Group of Intergers</option>
+            <option value="2">Per Smallest value</option>
+        </select>
+        <br>
+        <br>
+        <div id="res"></div>
+        <script>
+            function Result(a,b,c,highlighted){
+                this.a=a;
+                this.b=b;
+                this.c=c;
+                this.highlighted=highlighted;
+                this.toHTML=function(){
+                    if(this.highlighted){
+                        return "<span style='color:#f00'>"+"("+a+","+b+","+c+")"+"</span>";
+                    }else{
+                        return "("+a+","+b+","+c+")";
+                    }
+                }
+            }
+
+            var numbers=[];
+            for(var i=1;i<=15;i++){
+                numbers.push(i);
+            }
+            var str="";
+            var count=0;
+            var countMSixity=0;
+            var countMFifteen=0;
+            var arrSixty=[];
+            for(var i=0;i<numbers.length;i++){
+                for(var j=i+1;j<numbers.length;j++){
+                    for(var k=j+1;k<numbers.length;k++){
+                        count++;
+                        str+="("+i+","+j+","+k+")";
+                        var m=numbers[i]*numbers[j]*numbers[k];
+                        if(m%60==0){
+                            countMSixity++;
+                            arrSixty.push(new Result(numbers[i],numbers[j],numbers[k],true));
+                        }else{
+                            arrSixty.push(new Result(numbers[i],numbers[j],numbers[k],false));
+                        }
+                        if(m%15==0){
+                            countMFifteen++;
+                        }
+                    }   
+                } 
+            }
+            function setResStr(line){
+                var resstr="";
+                var countUp=1;
+                for(var i=0;i<arrSixty.length;i++){
+                    resstr+=arrSixty[i].toHTML();
+                    if(arrSixty[i].highlighted&&line==1){
+                        resstr+="No."+countUp;
+                        countUp++;
+                    }
+                    resstr+=",";
+                    switch(line){
+                        case 0:
+                            break;
+                        case 1:
+                            resstr+="<br>";
+                            break;
+                        case 2:
+                            if(i<arrSixty.length-1&&
+                               arrSixty[i].a!=arrSixty[i+1].a)
+                                resstr+="<br>";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                return resstr;
+            }
+            document.getElementById("res").innerHTML=  setResStr(2);
+            document.getElementById("lb").onchange=function(){
+                document.getElementById("res").innerHTML=  setResStr(
+                    parseInt(document.getElementById("lb").selectedIndex));
+            }
+            console.log(count);
+            console.log(str);
+            console.log(countMFifteen);
+            console.log(countMSixity);
+            var p1str=countMFifteen+"/"+455;
+            document.getElementById("p1").innerHTML=p1str;
+            var p2str=countMSixity+"/"+455;
+            document.getElementById("p2").innerHTML=p2str;
+
+
+        </script>
+    </body>
+</html>
